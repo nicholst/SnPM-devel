@@ -49,3 +49,7 @@ SnPMdefs.CovVals = {
     '0'
     };
 
+% Display option
+%------------------------------------------------------------------------
+SnPMdefs.Display = true;
+
