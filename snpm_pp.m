@@ -332,13 +332,15 @@ tol = 1e-4;	% Tolerance for comparing real numbers
 		% ( Reals have to be compared for equality when        )
 		% ( computing FWE-corrected p-values                   )
 
-%-SetUp figure window
-%-----------------------------------------------------------------------
-Finter = spm_figure('FindWin','Interactive');
-Fgraph = spm_figure('FindWin','Graphics');
-if isempty(Fgraph), Fgraph=spm_figure('Create','Graphics'); end
-spm_clf(Finter), spm_clf(Fgraph)
-set(Finter,'Name','SnPM PostProcess');
+if SnPMdefs.Display
+  %-SetUp figure window
+  %-----------------------------------------------------------------------
+  Finter = spm_figure('FindWin','Interactive');
+  Fgraph = spm_figure('FindWin','Graphics');
+  if isempty(Fgraph), Fgraph=spm_figure('Create','Graphics'); end
+  spm_clf(Finter), spm_clf(Fgraph)
+  set(Finter,'Name','SnPM PostProcess');
+end
 
 
 %-Get Data
@@ -767,7 +769,9 @@ end
 %=======================================================================
 %- C O M P U T A T I O N
 %=======================================================================
-set(Finter,'Pointer','Watch')
+if SnPMdefs.Display
+  set(Finter,'Pointer','Watch')
+end
 
 %-Calculate distribution of Maximum Suprathreshold Cluster size
 %-Calculate critical Suprathreshold Cluster Size
@@ -1044,57 +1048,59 @@ end
 %-Return if there are no voxels
 %-----------------------------------------------------------------------
 if isempty(Q)
-	set(Finter,'Pointer','Arrow')
-	figure(Fgraph)
-	axis off
-	text(0,0.97,CWD,'Fontsize',16,'FontWeight','Bold');
-	tmp='voxels'; if bSpatEx, tmp='suprathreshold clusters'; end
-	str='';
-	if ~isnan(u)
-	  if bSpatEx
-	    str=sprintf(...
-		'No %s significant at k>=%d (alpha=%6.4f FWE-corrected)\n',...
-		tmp,C_STCS,alph_FWE);
-	  else
-	    str=sprintf(...
-		'No %s significant at u>=%0.2f (alpha=%6.4f FWE-corrected)\n',...
-		tmp,u,alph_FWE);
-	  end
-	else
-	  str=sprintf(...
-	      'No %s significant at alpha=%6.4f (alpha=%6.4f FDR-corrected)\n',...
-	      tmp,alpha_ucp,alph_FDR);
-	end
-	if ~isempty(str)
-	  text(0,0.93,str);
-	  fprintf(['WARNING: ' str])
-	end
-	if length(strmatch('FWEreport',Report))>0
-	  if bSpatEx,
-	    ShowDist(MaxT,C_MaxT,alph_FWE,STCS_MxK,C_STCS,alph_FWE,'max');
-	  else	   
-	    ShowDist(MaxT,C_MaxT,alph_FWE,[],[],[],'max');
-	  end
-	  if ~BATCH
-	    if spm_input('Review permutation distributions.',1,'bd',...
-			 'Print & Continue|Continue',[1,0],1)
-	      spm_print
-	    end
-	  end
-	end
-	if length(strmatch('FDRreport',Report))>0
-	  spm_clf(Fgraph)
-	  axis off
-	  text(0,0.97,'Uncorrected P Permutation Distributions','Fontsize',16,'FontWeight',...
-	       'Bold');
-	  ShowDist(SnPMucp,alpha_ucp,alph_FDR,[],[],[],'uncor');
-	  if ~BATCH
-	    if spm_input('Review permutation distributions.',1,'bd',...
-			 'Print|Done',[1,0],1)
-	      spm_print
-	    end  
-	  end
-	end
+  if SnPMdefs.Display
+  	set(Finter,'Pointer','Arrow')
+  	figure(Fgraph)
+  	axis off
+  	text(0,0.97,CWD,'Fontsize',16,'FontWeight','Bold');
+  	tmp='voxels'; if bSpatEx, tmp='suprathreshold clusters'; end
+  	str='';
+  	if ~isnan(u)
+  	  if bSpatEx
+  	    str=sprintf(...
+  		'No %s significant at k>=%d (alpha=%6.4f FWE-corrected)\n',...
+  		tmp,C_STCS,alph_FWE);
+  	  else
+  	    str=sprintf(...
+  		'No %s significant at u>=%0.2f (alpha=%6.4f FWE-corrected)\n',...
+  		tmp,u,alph_FWE);
+  	  end
+  	else
+  	  str=sprintf(...
+  	      'No %s significant at alpha=%6.4f (alpha=%6.4f FDR-corrected)\n',...
+  	      tmp,alpha_ucp,alph_FDR);
+  	end
+  	if ~isempty(str)
+  	  text(0,0.93,str);
+  	  fprintf(['WARNING: ' str])
+  	end
+  	if length(strmatch('FWEreport',Report))>0
+  	  if bSpatEx,
+  	    ShowDist(MaxT,C_MaxT,alph_FWE,STCS_MxK,C_STCS,alph_FWE,'max');
+  	  else	   
+  	    ShowDist(MaxT,C_MaxT,alph_FWE,[],[],[],'max');
+  	  end
+  	  if ~BATCH
+  	    if spm_input('Review permutation distributions.',1,'bd',...
+  			 'Print & Continue|Continue',[1,0],1)
+  	      spm_print
+  	    end
+  	  end
+  	end
+  	if length(strmatch('FDRreport',Report))>0
+  	  spm_clf(Fgraph)
+  	  axis off
+  	  text(0,0.97,'Uncorrected P Permutation Distributions','Fontsize',16,'FontWeight',...
+  	       'Bold');
+  	  ShowDist(SnPMucp,alpha_ucp,alph_FDR,[],[],[],'uncor');
+  	  if ~BATCH
+  	    if spm_input('Review permutation distributions.',1,'bd',...
+  			 'Print|Done',[1,0],1)
+  	      spm_print
+  	    end  
+  	  end
+  	end
+  end
 	return
 end
 
@@ -1197,245 +1203,246 @@ end
 %=======================================================================
 %-D I S P L A Y :   Maximium intenisty projection of SPM{Z}
 %=======================================================================
+if SnPMdefs.Display
+  if length(strmatch('MIPtable',Report))>0
 
-if length(strmatch('MIPtable',Report))>0
-
-  spm_clf(Fgraph)
-  figure(Fgraph)
-  axis off
-  
-  hmip = axes('Position',[0.05 0.5 0.5 0.5]);
-  snpm_mip(SnPMt,XYZ,MAT,DIM); axis image
-  if bVarSm
-    title('SnPM{Pseudo-t}','FontSize',16,'Fontweight','Bold')
-  else
-    title(sprintf('SnPM{%s}',STAT),'FontSize',16,'Fontweight','Bold')
-  end
-  
-  %-Design matrix and contrast
-  %=======================================================================
-  hDesMtx = axes('Position',[0.65 0.6 0.2 0.2]);
-  image((spm_DesMtx('Sca', [H,C,B,G],HCBGnames) + 1)*32)
-  xlabel 'Design Matrix'
-  set(hDesMtx,'XTick',[],'XTickLabel','')
-  nPar   = size([H,C,B,G],2);
-  hConAxes = axes('Position',[0.65 0.81 0.2 0.1]);
-  if STAT == 'F'
-    imagesc(CONT,[-1 1]);
-    set(gca,'Tag','ConGrphAx',...
-	    'Box','on','TickDir','out',...
-	    'XTick',spm_DesRep('ScanTick',nPar,10),'XTickLabel','',...
-	    'XLim',	[0,nPar]+0.5,...
-	    'YTick',[1:size(CONT,1)],....
-	    'YTickLabel','',...
-	    'YLim',	[0,size(CONT,1)]+0.5	)
-  else
-    h = bar(CONT(1,:), 'FaceColor',[1 1 1]*.8, 'BarWidth', 1);  
-    tX = get(h,'XData'); tY = get(h,'YData');
-    bar_width = get(h, 'BarWidth');
-    set(gca,'Xlim',[min(tX(:))-bar_width/2 max(tX(:))+bar_width/2]) 
+    spm_clf(Fgraph)
+    figure(Fgraph)
     axis off
-  end
-  title 'contrast'; 
-  
-
-  %-Table of regional effects
-  %=======================================================================
-  %-Table headings
-  %-----------------------------------------------------------------------
-  hTable = axes('Position',[0.1 0.1 0.8 0.46],...
-		'YLim',[0,27],'YLimMode','manual',...
-		'DefaultTextInterpreter','Tex',...
-		'DefaultTextVerticalAlignment','Baseline',...
-		'Visible','off');
-  %	      'DefaultHorizontalAlignment','right',...
-  y = 26;
-  dy=1;
-  text(0,y,['P values & statistics:   ',spm_str_manip(CWD,'a40')],...
-       'FontSize',12,'FontWeight','Bold','Interpreter','none');
-  y  = y -dy;
-  line([0 1],[y y],'LineWidth',3,'Color','r')
-  y = y -dy;
-  
-  tCol       = [  0.00      0.12    0.26             ...	%-Cluster
-		  0.34      0.46    0.63      0.72   ...  %-Voxel
-		  0.88     0.94    1.00];        	%-XYZ
-  
-  PF    = spm_platform('fonts');   %-Font names (for this platform)
-
-
-  %-Construct table header
-  %-----------------------------------------------------------------------
-  set(gca,'DefaultTextFontName',PF.helvetica,'DefaultTextFontSize',10)
-  
-  Hp = [];
-  h  = text(0.10,y,	'cluster-level','FontSize',10,'HorizontalAlignment','Center');		
-  h  = line([tCol(1),0.30],[1,1]*(y-dy/4),'LineWidth',0.5,'Color','r');	
-  h  = text(tCol(1),y-9*dy/8,	'\itp_{FWE-corr}');        Hp = [Hp,h];
-  h  = text(tCol(2),y-9*dy/8,	'\itp_{uncorr}');      Hp = [Hp,h];
-  h  = text(tCol(3),y-9*dy/8,	'\itk ');			
-  
-  text(0.50,y,		'voxel-level','FontSize',10,'HorizontalAlignment','Center');
-  line([tCol(4),0.80],[1,1]*(y-dy/4),'LineWidth',0.5,'Color','r');
-  h  = text(tCol(4),y-9*dy/8,	'\itp_{FWE-corr}');	
-  h  = text(tCol(5),y-9*dy/8,	'\itp_{FDR-corr}');	
-  
-  if ~bVarSm
-    h  = text(tCol(6),y-9*dy/8,	sprintf('\\it%s',STAT));
-  else 
-    h  = text(tCol(6)-0.02,y-9*dy/8,	'Pseudo-t');
-  end 
-  
-  h  = text(tCol(7),y-9*dy/8,	'\itp_{uncorr}');
-  
-  text(tCol(8),y-dy/2,'{x,y,z} mm','FontSize',10);
-  
-  
-  y     = y - 7*dy/4;
-  line([0 1],[y y],'LineWidth',1,'Color','r')
-  y     = y - 5*dy/4;
-  
-  Fmtst = {	'%0.4f', '%0.4f', '%0.0f', ...                  %-Cluster
-		'%0.4f', '%0.4f', '%6.2f','%0.4f', ...		%-Voxel
-		'%3.0f','%3.0f','%3.0f'};			%-XYZ
-  
-  %-Column Locations
-  %-----------------------------------------------------------------------
-  %tCol       = [  0.07      0.30  ...			%-Cluster
-  %	           0.50      0.62      0.77           ...  %-Voxel
-  %                0.86 0.93 1.00];			%-XYZ
-  
-  %-List of maxima
-  %-----------------------------------------------------------------------
-  r = 1;
-  bUsed = zeros(size(STC_SnPMt));
-  while max(STC_SnPMt.*(~bUsed)) & (y > 3)
     
-    [null, i] = max(STC_SnPMt.*(~bUsed));	% Largest t value
-    j         = find(STC_r == STC_r(i));	% Maxima in same region
-    
-    %-Print region and largest maximum
-    %-------------------------------------------------------------------
-    
-    StrAttr = {'Fontsize',10,'ButtonDownFcn','get(gcbo, ''UserData'')',...
-	       'HorizontalAlignment','right'};
-    StrAttrB = {StrAttr{:},'FontWeight','Bold'};
-    %	text(0.00,y,sprintf('%0.0f',r),'UserData',r,StrAttrB{:})
-    if bSpatEx
-      text(tCol(1)+0.09,y,sprintf(Fmtst{1},Pn(i)),'UserData',Pn(i), ...
-	   StrAttrB{:})
-      text(tCol(2)+0.09,y,sprintf(Fmtst{2},Pun(i)),'UserData',Pun(i), ...
-	   StrAttrB{:})
+    hmip = axes('Position',[0.05 0.5 0.5 0.5]);
+    snpm_mip(SnPMt,XYZ,MAT,DIM); axis image
+    if bVarSm
+      title('SnPM{Pseudo-t}','FontSize',16,'Fontweight','Bold')
     else
-      set(Hp,'Visible','off')
+      title(sprintf('SnPM{%s}',STAT),'FontSize',16,'Fontweight','Bold')
     end
     
-    text(tCol(3)+0.04,y,sprintf(Fmtst{3},STC_N(i)),'UserData',STC_N(i),StrAttrB{:})
-    text(tCol(4)+0.08,y,sprintf(Fmtst{4},Pt(i)),'UserData',Pt(i),StrAttrB{:})
-    text(tCol(5)+0.09,y,sprintf(Fmtst{5},Pfdr(i)),'UserData',Pfdr(i),StrAttrB{:})
-    text(tCol(6)+0.04,y,sprintf(Fmtst{6},STC_SnPMt(i)),'UserData',STC_SnPMt(i),StrAttrB{:})
-    
-    text(tCol(7)+0.09,y,sprintf(Fmtst{7},Pu(i)),'UserData',Pu(i),StrAttr{:})
-    text(tCol(8),y,sprintf(Fmtst{8},STC_XYZ(1,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
-    text(tCol(9),y,sprintf(Fmtst{9},STC_XYZ(2,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
-    text(tCol(10),y,sprintf(Fmtst{10},STC_XYZ(3,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
-    y = y -1;
-    
-    %-Print up to 3 secondary maxima (>8mm apart)
-    %-------------------------------------------------------------------
-    [null, k] = sort(-STC_SnPMt(j));	% Sort on t value
-    D         = i;
-    for i = 1:length(k)
-      d     = j(k(i));
-      if min( sqrt( sum((STC_XYZ(:,D) - ...
-			 STC_XYZ(:,d)*ones(1,size(D,2))).^2) ) ) > 8;
-	if length(D) < 3
-	  text(tCol(4)+0.08,y,sprintf(Fmtst{4}, Pt(d)),'UserData',Pt(d),StrAttr{:})
-	  text(tCol(5)+0.09,y,sprintf(Fmtst{5}, Pfdr(d)),'UserData',Pfdr(d),StrAttr{:})
-	  text(tCol(6)+0.04,y,sprintf(Fmtst{6}, STC_SnPMt(d)), 'UserData',STC_SnPMt(d),StrAttr{:})
-	  
-	  text(tCol(7)+0.09,y,sprintf(Fmtst{7}, Pu(d)),'UserData',Pu(d),StrAttr{:})
-	  text(tCol(8),y,sprintf(Fmtst{8}, STC_XYZ(1,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
-	  text(tCol(9),y,sprintf(Fmtst{9}, STC_XYZ(2,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
-	  text(tCol(10),y,sprintf(Fmtst{10}, STC_XYZ(3,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
-	  
-	  D = [D d];
-	  y = y -1;
-	end
-      end
+    %-Design matrix and contrast
+    %=======================================================================
+    hDesMtx = axes('Position',[0.65 0.6 0.2 0.2]);
+    image((spm_DesMtx('Sca', [H,C,B,G],HCBGnames) + 1)*32)
+    xlabel 'Design Matrix'
+    set(hDesMtx,'XTick',[],'XTickLabel','')
+    nPar   = size([H,C,B,G],2);
+    hConAxes = axes('Position',[0.65 0.81 0.2 0.1]);
+    if STAT == 'F'
+      imagesc(CONT,[-1 1]);
+      set(gca,'Tag','ConGrphAx',...
+  	    'Box','on','TickDir','out',...
+  	    'XTick',spm_DesRep('ScanTick',nPar,10),'XTickLabel','',...
+  	    'XLim',	[0,nPar]+0.5,...
+  	    'YTick',[1:size(CONT,1)],....
+  	    'YTickLabel','',...
+  	    'YLim',	[0,size(CONT,1)]+0.5	)
+    else
+      h = bar(CONT(1,:), 'FaceColor',[1 1 1]*.8, 'BarWidth', 1);  
+      tX = get(h,'XData'); tY = get(h,'YData');
+      bar_width = get(h, 'BarWidth');
+      set(gca,'Xlim',[min(tX(:))-bar_width/2 max(tX(:))+bar_width/2]) 
+      axis off
     end
+    title 'contrast'; 
     
-    bUsed(j) = (bUsed(j) | 1 );		%-Mark maxima as "used"
-    r = r + 1;				% Next region
-  end
-  clear i j k D d r
-  
-  
-  %-Footnote with SnPM parameters
-  %=======================================================================
-  line([0,1],[0.5,0.5],'LineWidth',1,'Color','r')
-  y = 0;
-  if bSpatEx
-    tmp = sprintf('Cluster-defining thresh. = %7.4f',ST_Ut);
+
+    %-Table of regional effects
+    %=======================================================================
+    %-Table headings
+    %-----------------------------------------------------------------------
+    hTable = axes('Position',[0.1 0.1 0.8 0.46],...
+  		'YLim',[0,27],'YLimMode','manual',...
+  		'DefaultTextInterpreter','Tex',...
+  		'DefaultTextVerticalAlignment','Baseline',...
+  		'Visible','off');
+    %	      'DefaultHorizontalAlignment','right',...
+    y = 26;
+    dy=1;
+    text(0,y,['P values & statistics:   ',spm_str_manip(CWD,'a40')],...
+         'FontSize',12,'FontWeight','Bold','Interpreter','none');
+    y  = y -dy;
+    line([0 1],[y y],'LineWidth',3,'Color','r')
+    y = y -dy;
+    
+    tCol       = [  0.00      0.12    0.26             ...	%-Cluster
+  		  0.34      0.46    0.63      0.72   ...  %-Voxel
+  		  0.88     0.94    1.00];        	%-XYZ
+    
+    PF    = spm_platform('fonts');   %-Font names (for this platform)
+
+
+    %-Construct table header
+    %-----------------------------------------------------------------------
+    set(gca,'DefaultTextFontName',PF.helvetica,'DefaultTextFontSize',10)
+    
+    Hp = [];
+    h  = text(0.10,y,	'cluster-level','FontSize',10,'HorizontalAlignment','Center');		
+    h  = line([tCol(1),0.30],[1,1]*(y-dy/4),'LineWidth',0.5,'Color','r');	
+    h  = text(tCol(1),y-9*dy/8,	'\itp_{FWE-corr}');        Hp = [Hp,h];
+    h  = text(tCol(2),y-9*dy/8,	'\itp_{uncorr}');      Hp = [Hp,h];
+    h  = text(tCol(3),y-9*dy/8,	'\itk ');			
+    
+    text(0.50,y,		'voxel-level','FontSize',10,'HorizontalAlignment','Center');
+    line([tCol(4),0.80],[1,1]*(y-dy/4),'LineWidth',0.5,'Color','r');
+    h  = text(tCol(4),y-9*dy/8,	'\itp_{FWE-corr}');	
+    h  = text(tCol(5),y-9*dy/8,	'\itp_{FDR-corr}');	
+    
     if ~bVarSm
-      tmp=[tmp,sprintf(' (p = %6.4f)',spm_Tcdf(-ST_Ut,df))];
+      h  = text(tCol(6),y-9*dy/8,	sprintf('\\it%s',STAT));
+    else 
+      h  = text(tCol(6)-0.02,y-9*dy/8,	'Pseudo-t');
+    end 
+    
+    h  = text(tCol(7),y-9*dy/8,	'\itp_{uncorr}');
+    
+    text(tCol(8),y-dy/2,'{x,y,z} mm','FontSize',10);
+    
+    
+    y     = y - 7*dy/4;
+    line([0 1],[y y],'LineWidth',1,'Color','r')
+    y     = y - 5*dy/4;
+    
+    Fmtst = {	'%0.4f', '%0.4f', '%0.0f', ...                  %-Cluster
+  		'%0.4f', '%0.4f', '%6.2f','%0.4f', ...		%-Voxel
+  		'%3.0f','%3.0f','%3.0f'};			%-XYZ
+    
+    %-Column Locations
+    %-----------------------------------------------------------------------
+    %tCol       = [  0.07      0.30  ...			%-Cluster
+    %	           0.50      0.62      0.77           ...  %-Voxel
+    %                0.86 0.93 1.00];			%-XYZ
+    
+    %-List of maxima
+    %-----------------------------------------------------------------------
+    r = 1;
+    bUsed = zeros(size(STC_SnPMt));
+    while max(STC_SnPMt.*(~bUsed)) & (y > 3)
+      
+      [null, i] = max(STC_SnPMt.*(~bUsed));	% Largest t value
+      j         = find(STC_r == STC_r(i));	% Maxima in same region
+      
+      %-Print region and largest maximum
+      %-------------------------------------------------------------------
+      
+      StrAttr = {'Fontsize',10,'ButtonDownFcn','get(gcbo, ''UserData'')',...
+  	       'HorizontalAlignment','right'};
+      StrAttrB = {StrAttr{:},'FontWeight','Bold'};
+      %	text(0.00,y,sprintf('%0.0f',r),'UserData',r,StrAttrB{:})
+      if bSpatEx
+        text(tCol(1)+0.09,y,sprintf(Fmtst{1},Pn(i)),'UserData',Pn(i), ...
+  	   StrAttrB{:})
+        text(tCol(2)+0.09,y,sprintf(Fmtst{2},Pun(i)),'UserData',Pun(i), ...
+  	   StrAttrB{:})
+      else
+        set(Hp,'Visible','off')
+      end
+      
+      text(tCol(3)+0.04,y,sprintf(Fmtst{3},STC_N(i)),'UserData',STC_N(i),StrAttrB{:})
+      text(tCol(4)+0.08,y,sprintf(Fmtst{4},Pt(i)),'UserData',Pt(i),StrAttrB{:})
+      text(tCol(5)+0.09,y,sprintf(Fmtst{5},Pfdr(i)),'UserData',Pfdr(i),StrAttrB{:})
+      text(tCol(6)+0.04,y,sprintf(Fmtst{6},STC_SnPMt(i)),'UserData',STC_SnPMt(i),StrAttrB{:})
+      
+      text(tCol(7)+0.09,y,sprintf(Fmtst{7},Pu(i)),'UserData',Pu(i),StrAttr{:})
+      text(tCol(8),y,sprintf(Fmtst{8},STC_XYZ(1,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
+      text(tCol(9),y,sprintf(Fmtst{9},STC_XYZ(2,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
+      text(tCol(10),y,sprintf(Fmtst{10},STC_XYZ(3,i)),'UserData',STC_XYZ(:,i),StrAttrB{:})
+      y = y -1;
+      
+      %-Print up to 3 secondary maxima (>8mm apart)
+      %-------------------------------------------------------------------
+      [null, k] = sort(-STC_SnPMt(j));	% Sort on t value
+      D         = i;
+      for i = 1:length(k)
+        d     = j(k(i));
+        if min( sqrt( sum((STC_XYZ(:,D) - ...
+  			 STC_XYZ(:,d)*ones(1,size(D,2))).^2) ) ) > 8;
+  	if length(D) < 3
+  	  text(tCol(4)+0.08,y,sprintf(Fmtst{4}, Pt(d)),'UserData',Pt(d),StrAttr{:})
+  	  text(tCol(5)+0.09,y,sprintf(Fmtst{5}, Pfdr(d)),'UserData',Pfdr(d),StrAttr{:})
+  	  text(tCol(6)+0.04,y,sprintf(Fmtst{6}, STC_SnPMt(d)), 'UserData',STC_SnPMt(d),StrAttr{:})
+  	  
+  	  text(tCol(7)+0.09,y,sprintf(Fmtst{7}, Pu(d)),'UserData',Pu(d),StrAttr{:})
+  	  text(tCol(8),y,sprintf(Fmtst{8}, STC_XYZ(1,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
+  	  text(tCol(9),y,sprintf(Fmtst{9}, STC_XYZ(2,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
+  	  text(tCol(10),y,sprintf(Fmtst{10}, STC_XYZ(3,d)),'UserData',STC_XYZ(:,d),StrAttr{:})
+  	  
+  	  D = [D d];
+  	  y = y -1;
+  	end
+        end
+      end
+      
+      bUsed(j) = (bUsed(j) | 1 );		%-Mark maxima as "used"
+      r = r + 1;				% Next region
     end
-    text(0,y,tmp,'FontSize',8)
-    text(0.7,y,sprintf('Critical STCS = %d voxels',C_STCS),'FontSize',8)
-    y = y -0.8;
-    if ~isnan(alph_FWE)
-      tmp = sprintf('Cluster threshold: FWE-corr. P value= %6.4f', ...
-		    alph_FWE);
-    elseif ~isnan(alpha_ucp)
-      tmp = sprintf('Cluster threshold: Uncorr. P value= %6.4f', ...
-		    alpha_ucp);
+    clear i j k D d r
+    
+    
+    %-Footnote with SnPM parameters
+    %=======================================================================
+    line([0,1],[0.5,0.5],'LineWidth',1,'Color','r')
+    y = 0;
+    if bSpatEx
+      tmp = sprintf('Cluster-defining thresh. = %7.4f',ST_Ut);
+      if ~bVarSm
+        tmp=[tmp,sprintf(' (p = %6.4f)',spm_Tcdf(-ST_Ut,df))];
+      end
+      text(0,y,tmp,'FontSize',8)
+      text(0.7,y,sprintf('Critical STCS = %d voxels',C_STCS),'FontSize',8)
+      y = y -0.8;
+      if ~isnan(alph_FWE)
+        tmp = sprintf('Cluster threshold: FWE-corr. P value= %6.4f', ...
+  		    alph_FWE);
+      elseif ~isnan(alpha_ucp)
+        tmp = sprintf('Cluster threshold: Uncorr. P value= %6.4f', ...
+  		    alpha_ucp);
+      else
+        tmp = sprintf('Cluster threshold: Uncorr. cluster size STCS= %d', ...
+  		    C_STCS);
+      end
+      text(0,y,tmp, 'FontSize',8)
     else
-      tmp = sprintf('Cluster threshold: Uncorr. cluster size STCS= %d', ...
-		    C_STCS);
-    end
-    text(0,y,tmp, 'FontSize',8)
-  else
-    %make the format similar as spm.
-    %text(0,y,sprintf('alpha = %6.4f, df = %d',alpha,df),'FontSize',8)
-    if ~isnan(u)
-      text(0,y,sprintf('Height threshold: statistic u= %6.2f (%0.4f FWE)',u,alph_FWE),'FontSize',8)
-    else
-      text(0,y,sprintf('Height threshold: Nonparam. P value alpha= %0.4f (%0.4f FDR)',alpha_ucp, alph_FDR), 'FontSize',8)   
+      %make the format similar as spm.
+      %text(0,y,sprintf('alpha = %6.4f, df = %d',alpha,df),'FontSize',8)
+      if ~isnan(u)
+        text(0,y,sprintf('Height threshold: statistic u= %6.2f (%0.4f FWE)',u,alph_FWE),'FontSize',8)
+      else
+        text(0,y,sprintf('Height threshold: Nonparam. P value alpha= %0.4f (%0.4f FDR)',alpha_ucp, alph_FDR), 'FontSize',8)   
+      end
+      
     end
     
-  end
-  
-  if bVarSm
-    str = 'n/a (variance smoothing)';
-  else
-    str = sprintf('[%d %d]',df1,df);
-  end
-  text(0.7,y,['Degrees of freedom = ', str], 'FontSize',8)
-  y=y-0.8;
-  text(0,y,sprintf('Design: %s',sDesign),'FontSize',8);
-  y=y-0.8;
-  text(0,y,sprintf('Search vol: %d cmm, %d voxels',S*abs(prod(VOX)),S), 'FontSize',8)
-  y=y-0.8;
-  text(0.7,y,sprintf('Voxel size: [%5.2f, %5.2f, %5.2f] mm',abs(VOX)), ...
-       'FontSize', 8)
-  
-  text(0,y,sprintf('Perms: %s',sPiCond),'FontSize',8);
-  if bVarSm
-    y = y -0.8;
-    text(0,y,sVarSm,'FontSize',8)
-  end
-  
+    if bVarSm
+      str = 'n/a (variance smoothing)';
+    else
+      str = sprintf('[%d %d]',df1,df);
+    end
+    text(0.7,y,['Degrees of freedom = ', str], 'FontSize',8)
+    y=y-0.8;
+    text(0,y,sprintf('Design: %s',sDesign),'FontSize',8);
+    y=y-0.8;
+    text(0,y,sprintf('Search vol: %d cmm, %d voxels',S*abs(prod(VOX)),S), 'FontSize',8)
+    y=y-0.8;
+    text(0.7,y,sprintf('Voxel size: [%5.2f, %5.2f, %5.2f] mm',abs(VOX)), ...
+         'FontSize', 8)
+    
+    text(0,y,sprintf('Perms: %s',sPiCond),'FontSize',8);
+    if bVarSm
+      y = y -0.8;
+      text(0,y,sVarSm,'FontSize',8)
+    end
+    
 
-  if ~BATCH
-    %Set a button, so the user can decide whether to print the page of
-    %results to spm2.ps.
-    if spm_input('Review results.',1,'bd','Print|Done',[1,0],1)
-      spm_print
-    end 
-  end
-  
-  set(Finter,'Pointer','Arrow')
+    if ~BATCH
+      %Set a button, so the user can decide whether to print the page of
+      %results to spm2.ps.
+      if spm_input('Review results.',1,'bd','Print|Done',[1,0],1)
+        spm_print
+      end 
+    end
+    
+    set(Finter,'Pointer','Arrow')
 
+  end
 end
 
 %- Image output?
@@ -1488,10 +1495,11 @@ if WrtFlt
   clear t
 end
 
-%-Reset Interactive Window
-%-----------------------------------------------------------------------
-spm_figure('Clear','Interactive')
-
+if SnPMdefs.Display
+  %-Reset Interactive Window
+  %-----------------------------------------------------------------------
+  spm_figure('Clear','Interactive')
+end
 
 
 function ShowDist(T,cT,aT,C,cC,aC,Typ)
@@ -1518,7 +1526,9 @@ if nargin<5, cC  =[]; end
 if nargin<6, aC  =[]; end
 if nargin<7, Typ ='max'; end
 
-figure(spm_figure('FindWin','Graphics'));
+if SnPMdefs.Display
+  figure(spm_figure('FindWin','Graphics'));
+end
 
 if strcmp(Typ,'max')
   TitStr = 'Permutation Distribution:  Maximum Statistic';
@@ -1579,21 +1589,24 @@ if strcmp(Typ,'uncor')
 
   S = length(T);
   Ts = sort(T);
-  figure(spm_figure('FindWin','Graphics'));
-  axes('position',pos2)
-  loglog((1:S)/S,Ts,'r-o')
-  set(get(gca,'children'),'LineWidth',1,'MarkerSize',2)
-  snpm_abline(0,1);
-  snpm_abline(0,aT,'LineStyle','-','color','red')
-  if ~isnan(cT) & (cT~=0)
-    snpm_abline('h',cT,'LineStyle','-','Color','blue');
-    text(10^(log10(1/S)*0.9),10^(log10(cT)*.85),...
-	 sprintf('%3.3g FDR: p=%g',aT,cT),'color','red','FontSize',10)
+
+  if SnPMdefs.Display
+    figure(spm_figure('FindWin','Graphics'));
+    axes('position',pos2)
+    loglog((1:S)/S,Ts,'r-o')
+    set(get(gca,'children'),'LineWidth',1,'MarkerSize',2)
+    snpm_abline(0,1);
+    snpm_abline(0,aT,'LineStyle','-','color','red')
+    if ~isnan(cT) & (cT~=0)
+      snpm_abline('h',cT,'LineStyle','-','Color','blue');
+      text(10^(log10(1/S)*0.9),10^(log10(cT)*.85),...
+  	 sprintf('%3.3g FDR: p=%g',aT,cT),'color','red','FontSize',10)
+    end
+    title('FDR illustration: loglog pp-plot','FontSize',20)
+    axis image
+    xlabel('index/(number of voxels)'); 
+    ylabel('Ordered uncorrected nonparametric p-value')
   end
-  title('FDR illustration: loglog pp-plot','FontSize',20)
-  axis image
-  xlabel('index/(number of voxels)'); 
-  ylabel('Ordered uncorrected nonparametric p-value')
 
 
 elseif ~isempty(C)
