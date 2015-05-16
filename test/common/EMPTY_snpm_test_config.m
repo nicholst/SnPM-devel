@@ -13,3 +13,6 @@
 
 global testDataDir;
 testDataDir = ''; % Set path to your test data here
+
+global SnPMrefVersion
+SnPMrefVersion = 'SnPM8';
