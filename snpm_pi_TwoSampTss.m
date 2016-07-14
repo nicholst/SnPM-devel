@@ -78,7 +78,6 @@
 
 %-Initialisation
 %-----------------------------------------------------------------------
-global TEST;
 nCond    = 2;			% Number of conditions
 iGloNorm = '123';		% Allowable Global norm. codes
 sDesSave = 'iCond iRepl Xblk';	% PlugIn variables to save in cfg file
@@ -177,10 +176,6 @@ if ~all(iCond==PiCond(perm,:)), error('iCond~=PiCond(perm,:)'), end
 if (perm~=1)
 	PiCond(perm,:)=[];
 	PiCond=[iCond;PiCond];
-end
-if isempty(TEST) || ~TEST
-    %-Randomise order of PiConds (except first) to allow interim analysis
-    rand('seed',sum(100*clock))	%-Initialise random number generator
 end
 PiCond=[PiCond(1,:);PiCond(randperm(size(PiCond,1)-1)+1,:)];
 

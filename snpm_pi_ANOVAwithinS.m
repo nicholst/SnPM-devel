@@ -108,12 +108,8 @@
 
 %-Initialisation
 %-----------------------------------------------------------------------
-global TEST;
 iGloNorm = '123';		% Allowable Global norm. codes
 sDesSave = 'iRepl sHCform_Mtx';		        % PlugIn variables to save in cfg file
-if isempty(TEST) || ~TEST
-    rand('seed',sum(100*clock));	% Initialise random number generator
-end
 
 %-Get number of subjects
 nSubj    = size(job.fsubject,2);%spm_input('# subjects','+1');

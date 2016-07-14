@@ -94,10 +94,6 @@
 %-----------------------------------------------------------------------
 iGloNorm = '123';		% Allowable Global norm. codes
 sDesSave = 'iCond';		% PlugIn variables to save in cfg file
-global TEST;
-if isempty(TEST) || ~TEST % When testing the code we need a fixed seed
-    rand('seed',sum(100*clock));	% Initialise random number generator
-end
 
 %-Get filenames and iCond, the condition labels
 %=======================================================================
