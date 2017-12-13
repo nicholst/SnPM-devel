@@ -628,7 +628,7 @@ disp(['* # subjects in group ' num2str(g) ': ' num2str(nSubjects(g))]);
     for s = 1:nSubjects(g)
         disp(['* Select scans, group ' num2str(g), ', subj' num2str(s) ':'])
         for i = (nScansPerSub)*(s-1)+[1:nScansPerSub]
-            disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str((g-1)*nSubjects(1)*2+i, '%02.0f') '.nii'])]));
+            disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str((g-1)*nSubjects(1)*2+i, '%02.0f') '.nii'])]);
         end
         if ~chgorder || g~=1 || s>2
             disp(['Enter conditions index (A/B) [' num2str(nScansPerSub) ']: ' repmat('AB', 1, nScansPerSub/2)])
@@ -671,7 +671,7 @@ cd(dataDir)
 disp('* Select design type: SingleSub: Simple Regression; 1 covariate of interest');
 disp('* Select scans in time order: ' );
 for s = 1:nScans
-    disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(s, '%02.0f') '.nii'])]));
+    disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(s, '%02.0f') '.nii'])]);
 end
 disp(['* Enter covariate value[' num2str(nScans) ']: 1 2 0 -1 5 4 3 3 1 -2']) 
 disp('* Size of exchangeability block: 2');
@@ -705,7 +705,7 @@ cd(dataDir)
 disp('* Select design type: MultiSub: Simple Regression; 1 covariate of interest');
 disp('* Select scans, 1 per subj.: ' );
 for s = 1:nSubjects
-    disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(s, '%02.0f') '.nii'])]));
+    disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(s, '%02.0f') '.nii'])]);
 end
 disp(['Enter covariate value[' num2str(nSubjects) ']: 1 3 5 0']) 
 if isempty(nPerms)
@@ -744,7 +744,7 @@ disp(['* # subjects: ' num2str(nSubjects)]);
 for s = 1:nSubjects
     disp(['* Subject ' num2str(s) ': Select scans in time order:'])
     for i = (nScansPerSub)*(s-1)+[1:nScansPerSub]
-        disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]));
+        disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]);
     end
     if s>2 || ~chgorder
         disp(['Enter conditions index (A/B) [' num2str(nScansPerSub) ']: ' repmat('AB', 1, nScansPerSub/2)])
@@ -786,7 +786,7 @@ disp(['* # of scans/subjects: ' num2str(nScansPerSub)]);
 for s = 1:nSubjects
     disp(['* Subject ' num2str(s) ': Select scans in time order:'])
     for i = (nScansPerSub)*(s-1)+[1:nScansPerSub]
-        disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]));
+        disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]);
     end
 end
 if isempty(nPerms)
@@ -822,7 +822,7 @@ cd(dataDir)
 disp('* Select design type: >2 Groups: Between Group ANOVA; 1 scan/subject');
 disp('* Select all scans:')
 for i = 1:nSubjects
-    disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]));
+    disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]);
 end
 disp('* Number of groups k=: 3')
 disp(['* Enter subject index: (A/B/...)[' num2str(nSubjects) ']: AABBCC']);
@@ -864,7 +864,7 @@ else
 end
 disp('* Select scans in time order:')
 for i = 1:nSubjects
-    disp(sprintf(['\t' fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]));
+    disp([sprintf('\t') fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]);
 end
 disp(['* Enter conditions index (B/A) [' num2str(nSubjects) ']: ' repmat('AB', 1, nSubjects/2)]);
 common_choices(1, varSmoothing, '', '', '', '', '', '', '', ...
@@ -915,21 +915,21 @@ cd(dataDir)
 disp('* Select design type: 2 Groups: Two Sample T test; 1 scan/subject');
 disp('* Select all scans:');
 for i = 1:(nSubjects/2)
-    disp(sprintf(['\t' ...
-        fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]));
+    disp([sprintf('\t') ...
+        fullfile(dataDir, ['test_data_' num2str(i, '%02.0f') '.nii'])]);
 end
 if ~unbalanced
     for i = 18:(18-1+(nSubjects/2))
-        disp(sprintf(['\t' ...
-            fullfile(dataDir, ['test_data_gr2_' num2str(i, '%02.0f') '.nii'])]));
+        disp([sprintf('\t') ...
+            fullfile(dataDir, ['test_data_gr2_' num2str(i, '%02.0f') '.nii'])]);
     end
     disp(['Enter subject index (A/B) [' num2str(nSubjects) ']: ' repmat('A',1,nSubjects/2) repmat('B',1,nSubjects/2)])
 else
-    disp(sprintf(['\t' ...
-        fullfile(dataDir, ['test_data_04.nii'])]));
+    disp([sprintf('\t') ...
+        fullfile(dataDir, ['test_data_04.nii'])]);
     for i = 18:19
-        disp(sprintf(['\t' ...
-            fullfile(dataDir, ['test_data_gr2_' num2str(i, '%02.0f') '.nii'])]));
+        disp([sprintf('\t') ...
+            fullfile(dataDir, ['test_data_gr2_' num2str(i, '%02.0f') '.nii'])]);
     end
     disp(['Enter subject index (A/B) [6]: AAAABB'])
 end
@@ -999,9 +999,9 @@ disp('* Select all scans:');
 for i = 1:nSubjects
     if nSubjects == 6 && i==6
         % Used in negative ANCOVA only         
-        disp(sprintf(['\t' fullfile(dataDir, 'test_data_gr3_21.nii')]))
+        disp([sprintf('\t') fullfile(dataDir, 'test_data_gr3_21.nii')])
     else
-        disp(sprintf(['\t' fullfile(dataDir, ['test_data' num2str(i, '%02.0f') '.nii'])]))
+        disp([sprintf('\t') fullfile(dataDir, ['test_data' num2str(i, '%02.0f') '.nii'])])
     end
 end
 disp(['* # of confounding covariates: ' numCovariates])
